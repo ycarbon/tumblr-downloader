@@ -9,8 +9,8 @@ var fs = require('fs'),
     appInfo = require('./package.json');
 
 var Downloader = {
-    /** 
-	* Config options 
+    /**
+	* Config options
 	*/
     options: {
         site: process.argv[2],
@@ -54,7 +54,7 @@ var Downloader = {
             if (err){
                 console.log('Code: \'%s\', Message: \'%s\''.red, err.code, err.message);
                 self.options.retried_time += 1;
-            } 
+            }
             if (err && self.options.retried_time <= self.options.retry_time) {
                 if (self.options.retry_time - self.options.retried_time + 1) {
                     console.log(colors.bgWhite.black('Retry in 3s...(will retry ' + (self.options.retry_time - self.options.retried_time + 1) + ' times)'));
@@ -71,7 +71,7 @@ var Downloader = {
                 self.options.start += self.options.num;
                 self.run();
             }
-        });  
+        });
     },
     crawlPosts: function(retry,url,callback){
         var self = this;
@@ -96,6 +96,8 @@ var Downloader = {
     },
     getPosts: function(body, callback){
         var self = this;
+        console.log(body);
+        console.log(err);
         xml2js.parseString(body, { explicitArray: false }, function(err, data){
             if(!data){
                 console.log('Unknown error, please try it again later.'.red);
@@ -145,9 +147,9 @@ var Downloader = {
     downImages: function(images, callback){
         var self = this;
         async.eachLimit(
-            images, 
-            self.options.concurrency, 
-            self.wrapTask(self.downImage), 
+            images,
+            self.options.concurrency,
+            self.wrapTask(self.downImage),
             function (err) {
                 callback(err);
             });
@@ -173,7 +175,7 @@ var Downloader = {
     },
     isExist: function(filename, res){
         var self = this;
-        return fs.existsSync(self.options.dir + "/" + filename) && 
+        return fs.existsSync(self.options.dir + "/" + filename) &&
                res.headers['content-length'] == fs.statSync(self.options.dir + "/" + filename).size;
     },
     download: function (url, dir, filename, callback) {
